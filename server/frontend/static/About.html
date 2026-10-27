@@ -1,68 +1,100 @@
-<html>
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <!-- Link the style sheet here -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Dealerships</title>
+
+    <link rel="stylesheet" href="/static/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
-<div>
-  <nav class="navbar navbar-expand-lg navbar-light" style="background-color:darkturquoise; height: 1in;">
-    <div class="container-fluid">
-      <h2 style="padding-right: 5%;">Dealerships</h2>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarText">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" style="font-size: larger;" aria-current="page" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link active" style="font-size: larger;" href="/about">About Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" style="font-size: larger;" href="/contact">Contact Us</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  
-    <div class="card" style="width: 80%;margin: auto; margin-top:5%;">
-      <div class="banner" name="about-header">
-      <!-- Insert header information here -->
-      </div>
-      <div style="display: flex;flex-direction: row; margin:auto">
-      <div class="card" style="width: 30%;">
-        <img class="card-img-top" src="/static/person.png" alt="Card image">
-        <div class="card-body">
-          <p class="title">Person1</p>
-          <p>Person1 Title</p>
-          <p class="card-text">Some text that explains the person1 in about 2 short sentences</p>
-          <p>person1@example.com</p>
-        </div>
-      </div>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light"
+         style="background-color: darkturquoise; min-height: 1in;">
+        <div class="container-fluid">
+            <h2 style="padding-right: 5%;">Dealerships</h2>
 
-      <div class="card" style="width: 30%;">
-        <img class="card-img-top" src="/static/person.png" alt="Card image">
-        <div class="card-body">
-          <p class="title">Person2</p>
-          <p>Person2 Title</p>
-          <p class="card-text">Some text that explains the person2 in about 2 short sentences</p>
-          <p>person2@example.com</p>
-        </div>
-      </div>
+            <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbarText"
+                    aria-controls="navbarText" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-      <div class="card" style="width: 30%;">
-        <img class="card-img-top" src="/static/person.png" alt="Card image">
-        <div class="card-body">
-          <p class="title">Person3</p>
-          <p>Person3 Title</p>
-          <p class="card-text">Some text that explains the person3 in about 2 short sentences</p>
-          <p>person3@example.com</p>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" style="font-size: larger;"
+                           href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" style="font-size: larger;"
+                           aria-current="page" href="/about">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" style="font-size: larger;"
+                           href="/contact">Contact Us</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-      </div>
-    </div>
-    </div>
-    </div>
-    
-</div>
+    </nav>
 
+    <main class="card" style="width: 90%; margin: 4% auto; padding: 2%;">
+        <div class="banner text-center" name="about-header">
+            <h1>About Our Team</h1>
+            <p>Meet the people dedicated to helping you find the right car.</p>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-around gap-3 mt-4">
+            <div class="card" style="width: 30%; min-width: 230px;">
+                <img class="card-img-top" src="/static/person.png"
+                     alt="Sales manager">
+                <div class="card-body">
+                    <h3 class="title">Alex Johnson</h3>
+                    <h5>Sales Manager</h5>
+                    <p class="card-text">
+                        Alex helps customers explore our dealership inventory
+                        and find vehicles that suit their needs. He is committed
+                        to making every buying experience straightforward.
+                    </p>
+                    <p><a href="mailto:alex.johnson@example.com">alex.johnson@example.com</a></p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 30%; min-width: 230px;">
+                <img class="card-img-top" src="/static/person.png"
+                     alt="Customer relations specialist">
+                <div class="card-body">
+                    <h3 class="title">Priya Sharma</h3>
+                    <h5>Customer Relations Specialist</h5>
+                    <p class="card-text">
+                        Priya assists customers with questions, feedback, and
+                        dealership reviews. She works to ensure customers feel
+                        heard and supported throughout their visit.
+                    </p>
+                    <p><a href="mailto:priya.sharma@example.com">priya.sharma@example.com</a></p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 30%; min-width: 230px;">
+                <img class="card-img-top" src="/static/person.png"
+                     alt="Service coordinator">
+                <div class="card-body">
+                    <h3 class="title">Michael Lee</h3>
+                    <h5>Service Coordinator</h5>
+                    <p class="card-text">
+                        Michael coordinates customer support and helps visitors
+                        connect with the appropriate dealership team. He focuses
+                        on providing clear information and dependable service.
+                    </p>
+                    <p><a href="mailto:michael.lee@example.com">michael.lee@example.com</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/bootstrap.min.js"></script>
+</body>
 </html>

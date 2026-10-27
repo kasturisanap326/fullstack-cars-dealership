@@ -1,123 +1,186 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "./Dealers.css";
 import "../assets/style.css";
 import Header from '../Header/Header';
 
-
 const PostReview = () => {
+  const { id } = useParams();
+
   const [dealer, setDealer] = useState({});
   const [review, setReview] = useState("");
-  const [model, setModel] = useState();
+  const [model, setModel] = useState("");
   const [year, setYear] = useState("");
   const [date, setDate] = useState("");
   const [carmodels, setCarmodels] = useState([]);
 
-  let curr_url = window.location.href;
-  let root_url = curr_url.substring(0,curr_url.indexOf("postreview"));
-  let params = useParams();
-  let id =params.id;
-  let dealer_url = root_url+`djangoapp/dealer/${id}`;
-  let review_url = root_url+`djangoapp/add_review`;
-  let carmodels_url = root_url+`djangoapp/get_cars`;
+  const dealer_url = `/djangoapp/get_dealer/${id}`;
+  const review_url = `/djangoapp/add_review`;
+  const carmodels_url = `/djangoapp/get_car_make`;
 
-  const postreview = async ()=>{
-    let name = sessionStorage.getItem("firstname")+" "+sessionStorage.getItem("lastname");
-    //If the first and second name are stores as null, use the username
-    if(name.includes("null")) {
-      name = sessionStorage.getItem("username");
-    }
-    if(!model || review === "" || date === "" || year === "" || model === "") {
-      alert("All details are mandatory")
+  useEffect(() => {
+    const getDealer = async () => {
+      try {
+        const res = await fetch(dealer_url);
+        const data = await res.json();
+
+        if (res.ok && data.status === 200) {
+          setDealer(data.dealer);
+        }
+      } catch (error) {
+        console.error("Error loading dealer:", error);
+      }
+    };
+
+    const getCars = async () => {
+      try {
+        const res = await fetch(carmodels_url);
+        const data = await res.json();
+
+        console.log("Car make API response:", data);
+
+        if (res.ok && data.status === 200) {
+          setCarmodels(data.CarModels || data.CarMakes || []);
+        }
+      } catch (error) {
+        console.error("Error loading car makes:", error);
+      }
+    };
+
+    getDealer();
+    getCars();
+  }, [id]);
+
+  const postreview = async () => {
+    if (!model || !review.trim() || !date || !year) {
+      alert("All details are mandatory");
       return;
     }
 
-    let model_split = model.split(" ");
-    let make_chosen = model_split[0];
-    let model_chosen = model_split[1];
+    const selectedCar = carmodels.find(
+      (car) => `${car.CarMake} ${car.CarModel}` === model
+    );
 
-    let jsoninput = JSON.stringify({
-      "name": name,
-      "dealership": id,
-      "review": review,
-      "purchase": true,
-      "purchase_date": date,
-      "car_make": make_chosen,
-      "car_model": model_chosen,
-      "car_year": year,
-    });
+    const parts = model.split(" ");
+    const makeChosen = selectedCar?.CarMake || parts[0];
+    const modelChosen = selectedCar?.CarModel || parts.slice(1).join(" ");
 
-    console.log(jsoninput);
-    const res = await fetch(review_url, {
-      method: "POST",
-      headers: {
-          "Content-Type": "application/json",
-      },
-      body: jsoninput,
-  });
+    let name =
+      `${sessionStorage.getItem("firstname")} ${sessionStorage.getItem("lastname")}`;
 
-  const json = await res.json();
-  if (json.status === 200) {
-      window.location.href = window.location.origin+"/dealer/"+id;
-  }
-
-  }
-  const get_dealer = async ()=>{
-    const res = await fetch(dealer_url, {
-      method: "GET"
-    });
-    const retobj = await res.json();
-    
-    if(retobj.status === 200) {
-      let dealerobjs = Array.from(retobj.dealer)
-      if(dealerobjs.length > 0)
-        setDealer(dealerobjs[0])
+    if (name.includes("null")) {
+      name = sessionStorage.getItem("username") || "User";
     }
-  }
 
-  const get_cars = async ()=>{
-    const res = await fetch(carmodels_url, {
-      method: "GET"
-    });
-    const retobj = await res.json();
-    
-    let carmodelsarr = Array.from(retobj.CarModels)
-    setCarmodels(carmodelsarr)
-  }
-  useEffect(() => {
-    get_dealer();
-    get_cars();
-  },[]);
+    const jsoninput = {
+      name,
+      dealership: id,
+      review: review.trim(),
+      purchase: true,
+      purchase_date: date,
+      car_make: makeChosen,
+      car_model: modelChosen,
+      car_year: year
+    };
 
+    try {
+      const res = await fetch(review_url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsoninput)
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.status === 200) {
+        window.location.href = `/dealer/${id}`;
+      } else {
+        alert(data.error || "Could not submit review. Please check the server.");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      alert("Could not submit review. Check that the Django server is running.");
+    }
+  };
 
   return (
     <div>
-      <Header/>
-      <div  style={{margin:"5%"}}>
-      <h1 style={{color:"darkblue"}}>{dealer.full_name}</h1>
-      <textarea id='review' cols='50' rows='7' onChange={(e) => setReview(e.target.value)}></textarea>
-      <div className='input_field'>
-      Purchase Date <input type="date" onChange={(e) => setDate(e.target.value)}/>
-      </div>
-      <div className='input_field'>
-      Car Make 
-      <select name="cars" id="cars" onChange={(e) => setModel(e.target.value)}>
-      <option value="" selected disabled hidden>Choose Car Make and Model</option>
-      {carmodels.map(carmodel => (
-          <option value={carmodel.CarMake+" "+carmodel.CarModel}>{carmodel.CarMake} {carmodel.CarModel}</option>
-      ))}
-      </select>        
-      </div >
+      <Header />
 
-      <div className='input_field'>
-      Car Year <input type="int" onChange={(e) => setYear(e.target.value)} max={2023} min={2015}/>
-      </div>
+      <div style={{ margin: "5%" }}>
+        <h1 style={{ color: "darkblue" }}>{dealer.full_name}</h1>
 
-      <div>
-      <button className='postreview' onClick={postreview}>Post Review</button>
+        <textarea
+          id="review"
+          cols="50"
+          rows="7"
+          value={review}
+          onChange={(e) => setReview(e.target.value)}
+          placeholder="Write your review"
+        />
+
+        <div className="input_field">
+          Purchase Date{" "}
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+        </div>
+
+        <div className="input_field">
+          Car Make
+          <select
+            name="cars"
+            id="cars"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+          >
+            <option value="" disabled>
+              Choose Car Make and Model
+            </option>
+
+            {carmodels.map((car, index) => {
+              const make = car.CarMake || car.make || car.name;
+              const carModel = car.CarModel || car.model || "";
+
+              if (!make) return null;
+
+              const value = `${make} ${carModel}`.trim();
+
+              return (
+                <option key={car.id || index} value={value}>
+                  {value}
+                </option>
+              );
+            })}
+          </select>
+
+          {carmodels.length === 0 && (
+            <p>Car makes are loading or unavailable. Please check the API.</p>
+          )}
+        </div>
+
+        <div className="input_field">
+          Car Year{" "}
+          <input
+            type="number"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            max="2023"
+            min="2015"
+          />
+        </div>
+
+        <div>
+          <button className="postreview" onClick={postreview}>
+            Post Review
+          </button>
+        </div>
       </div>
     </div>
-    </div>
-  )
-}
-export default PostReview
+  );
+};
+
+export default PostReview;
